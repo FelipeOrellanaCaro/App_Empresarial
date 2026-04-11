@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Control de Inventario</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Control de Inventario</h1>
+    <nav>
+      <button class="tab-btn active" data-tab="stock">Stock Actual</button>
+      <button class="tab-btn" data-tab="productos">Productos</button>
+      <button class="tab-btn" data-tab="movimientos">Movimientos</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- TAB: STOCK ACTUAL -->
+    <section id="tab-stock" class="tab-content active">
+      <div class="section-header">
+        <h2>Stock Actual</h2>
+        <input type="text" id="buscar-stock" placeholder="Buscar producto..." />
+      </div>
+      <table id="tabla-stock">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+            <th>Unidad</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-stock"></tbody>
+      </table>
+      <p id="stock-vacio" class="empty-msg">No hay productos registrados.</p>
+    </section>
+
+    <!-- TAB: PRODUCTOS -->
+    <section id="tab-productos" class="tab-content">
+      <div class="section-header">
+        <h2>Productos</h2>
+        <button id="btn-nuevo-producto" class="btn-primary">+ Nuevo Producto</button>
+      </div>
+
+      <div id="form-producto" class="form-card hidden">
+        <h3 id="form-producto-titulo">Nuevo Producto</h3>
+        <div class="form-grid">
+          <label>Código *
+            <input type="text" id="prod-codigo" placeholder="Ej: P001" />
+          </label>
+          <label>Nombre *
+            <input type="text" id="prod-nombre" placeholder="Nombre del producto" />
+          </label>
+          <label>Categoría
+            <input type="text" id="prod-categoria" placeholder="Ej: Electrónica" />
+          </label>
+          <label>Unidad
+            <input type="text" id="prod-unidad" placeholder="Ej: unidades, kg, litros" />
+          </label>
+          <label>Stock mínimo
+            <input type="number" id="prod-stock-min" placeholder="0" min="0" />
+          </label>
+          <label>Stock inicial
+            <input type="number" id="prod-stock-inicial" placeholder="0" min="0" />
+          </label>
+        </div>
+        <div class="form-actions">
+          <button id="btn-guardar-producto" class="btn-primary">Guardar</button>
+          <button id="btn-cancelar-producto" class="btn-secondary">Cancelar</button>
+        </div>
+        <p id="error-producto" class="error-msg"></p>
+      </div>
+
+      <table id="tabla-productos">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Unidad</th>
+            <th>Stock mín.</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-productos"></tbody>
+      </table>
+      <p id="productos-vacio" class="empty-msg">No hay productos registrados.</p>
+    </section>
+
+    <!-- TAB: MOVIMIENTOS -->
+    <section id="tab-movimientos" class="tab-content">
+      <div class="section-header">
+        <h2>Movimientos</h2>
+        <button id="btn-nuevo-movimiento" class="btn-primary">+ Registrar Movimiento</button>
+      </div>
+
+      <div id="form-movimiento" class="form-card hidden">
+        <h3>Registrar Movimiento</h3>
+        <div class="form-grid">
+          <label>Producto *
+            <select id="mov-producto">
+              <option value="">-- Seleccionar --</option>
+            </select>
+          </label>
+          <label>Tipo *
+            <select id="mov-tipo">
+              <option value="entrada">Entrada</option>
+              <option value="salida">Salida</option>
+            </select>
+          </label>
+          <label>Cantidad *
+            <input type="number" id="mov-cantidad" placeholder="0" min="1" />
+          </label>
+          <label>Fecha *
+            <input type="date" id="mov-fecha" />
+          </label>
+          <label class="full-width">Motivo / Descripción
+            <input type="text" id="mov-motivo" placeholder="Ej: Compra a proveedor, Venta #123..." />
+          </label>
+        </div>
+        <div class="form-actions">
+          <button id="btn-guardar-movimiento" class="btn-primary">Guardar</button>
+          <button id="btn-cancelar-movimiento" class="btn-secondary">Cancelar</button>
+        </div>
+        <p id="error-movimiento" class="error-msg"></p>
+      </div>
+
+      <div class="filtros-movimientos">
+        <select id="filtro-tipo">
+          <option value="">Todos los tipos</option>
+          <option value="entrada">Entradas</option>
+          <option value="salida">Salidas</option>
+        </select>
+        <select id="filtro-producto-mov">
+          <option value="">Todos los productos</option>
+        </select>
+      </div>
+
+      <table id="tabla-movimientos">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Producto</th>
+            <th>Tipo</th>
+            <th>Cantidad</th>
+            <th>Motivo</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-movimientos"></tbody>
+      </table>
+      <p id="movimientos-vacio" class="empty-msg">No hay movimientos registrados.</p>
+    </section>
+  </main>
+
+  <!-- Modal confirmación eliminar -->
+  <div id="modal-eliminar" class="modal hidden">
+    <div class="modal-box">
+      <p>¿Eliminar este producto? Se perderán todos sus movimientos.</p>
+      <div class="form-actions">
+        <button id="btn-confirmar-eliminar" class="btn-danger">Eliminar</button>
+        <button id="btn-cancelar-eliminar" class="btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
