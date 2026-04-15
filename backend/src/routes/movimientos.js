@@ -1,7 +1,10 @@
 const { Router } = require('express');
 const db = require('../db');
+const { autenticar, soloAdmin } = require('../middleware/auth');
 
 const router = Router();
+
+router.use(autenticar);
 
 // GET /api/movimientos?producto_id=&tipo=&desde=&hasta=
 router.get('/', (req, res) => {
@@ -60,9 +63,9 @@ router.post('/', (req, res) => {
   }
 
   const { lastInsertRowid } = db.prepare(`
-    INSERT INTO movimientos (producto_id, tipo, cantidad, motivo, fecha)
-    VALUES (?, ?, ?, ?, ?)
-  `).run(producto_id, tipo, cant, motivo?.trim() || null, fecha);
+    INSERT INTO movimientos (producto_id, usuario_id, tipo, cantidad, motivo, fecha)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(producto_id, req.usuario.id, tipo, cant, motivo?.trim() || null, fecha);
 
   const nuevo = db.prepare(`
     SELECT m.*, p.nombre AS producto_nombre, p.codigo AS producto_codigo, p.unidad
@@ -73,8 +76,8 @@ router.post('/', (req, res) => {
   res.status(201).json(nuevo);
 });
 
-// DELETE /api/movimientos/:id  (anular movimiento)
-router.delete('/:id', (req, res) => {
+// DELETE /api/movimientos/:id  (anular movimiento — solo admin)
+router.delete('/:id', soloAdmin, (req, res) => {
   const mov = db.prepare('SELECT * FROM movimientos WHERE id = ?').get(req.params.id);
   if (!mov) return res.status(404).json({ error: 'Movimiento no encontrado' });
 

@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react';
 import { productosApi } from '../api/client';
 import { Badge, stockVariant } from '../components/Badge';
+import { exportarExcel, exportarPDF } from '../utils/exportar';
+
+const COLUMNAS_EXPORT = [
+  { key: 'codigo',       label: 'Código' },
+  { key: 'nombre',       label: 'Producto' },
+  { key: 'categoria',    label: 'Categoría' },
+  { key: 'stock_actual', label: 'Stock' },
+  { key: 'stock_min',    label: 'Stock mínimo' },
+  { key: 'unidad',       label: 'Unidad' },
+];
 
 export default function Stock() {
   const [productos, setProductos] = useState([]);
@@ -27,12 +37,20 @@ export default function Stock() {
     <section>
       <div className="section-header">
         <h2>Stock Actual</h2>
-        <input
-          className="input-search"
-          placeholder="Buscar producto..."
-          value={buscar}
-          onChange={e => setBuscar(e.target.value)}
-        />
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <input
+            className="input-search"
+            placeholder="Buscar producto..."
+            value={buscar}
+            onChange={e => setBuscar(e.target.value)}
+          />
+          <button className="btn-export" onClick={() => exportarExcel(filtrados, COLUMNAS_EXPORT, 'stock-inventario')}>
+            ⬇ Excel
+          </button>
+          <button className="btn-export" onClick={() => exportarPDF(filtrados, COLUMNAS_EXPORT, 'Stock de Inventario', 'stock-inventario')}>
+            ⬇ PDF
+          </button>
+        </div>
       </div>
 
       {filtrados.length === 0 ? (

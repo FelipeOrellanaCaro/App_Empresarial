@@ -3,6 +3,16 @@ import { movimientosApi, productosApi } from '../api/client';
 import { Badge } from '../components/Badge';
 import { Modal, ConfirmModal } from '../components/Modal';
 import { useAsync } from '../hooks/useAsync';
+import { useAuth } from '../context/AuthContext';
+import { exportarExcel, exportarPDF } from '../utils/exportar';
+
+const COLUMNAS_EXPORT = [
+  { key: 'fecha',            label: 'Fecha' },
+  { key: 'producto_nombre',  label: 'Producto' },
+  { key: 'tipo',             label: 'Tipo' },
+  { key: 'cantidad',         label: 'Cantidad' },
+  { key: 'motivo',           label: 'Motivo' },
+];
 
 const TODAY = new Date().toISOString().split('T')[0];
 const EMPTY_FORM = { producto_id: '', tipo: 'entrada', cantidad: '', fecha: TODAY, motivo: '' };
@@ -12,6 +22,8 @@ export default function Movimientos() {
   const [productos, setProductos]     = useState([]);
   const [loading, setLoading]         = useState(true);
   const [fetchError, setFetchError]   = useState(null);
+  const { usuario } = useAuth();
+  const esAdmin = usuario?.rol === 'admin';
 
   const [filtroTipo,    setFiltroTipo]    = useState('');
   const [filtroProducto, setFiltroProducto] = useState('');
@@ -74,17 +86,21 @@ export default function Movimientos() {
     <section>
       <div className="section-header">
         <h2>Movimientos</h2>
-        <button
-          className="btn-primary"
-          onClick={() => {
-            if (productos.length === 0) { alert('Primero registra un producto.'); return; }
-            setForm(EMPTY_FORM);
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button className="btn-export" onClick={() => exportarExcel(movimientos, COLUMNAS_EXPORT, 'movimientos')}>⬇ Excel</button>
+          <button className="btn-export" onClick={() => exportarPDF(movimientos, COLUMNAS_EXPORT, 'Historial de Movimientos', 'movimientos')}>⬇ PDF</button>
+          <button
+            className="btn-primary"
+            onClick={() => {
+              if (productos.length === 0) { alert('Primero registra un producto.'); return; }
+              setForm(EMPTY_FORM);
             saveAsync.clearError();
             setFormOpen(true);
           }}
         >
           + Registrar Movimiento
-        </button>
+          </button>
+        </div>
       </div>
 
       {/* Modal formulario */}
@@ -187,7 +203,9 @@ export default function Movimientos() {
                   <td>{m.cantidad}</td>
                   <td>{m.motivo || '—'}</td>
                   <td>
-                    <button className="btn-del" onClick={() => setDeleteId(m.id)}>Anular</button>
+                    {esAdmin && (
+                      <button className="btn-del" onClick={() => setDeleteId(m.id)}>Anular</button>
+                    )}
                   </td>
                 </tr>
               ))}

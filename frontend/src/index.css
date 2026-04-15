@@ -162,3 +162,125 @@ tbody td  { padding: 0.65rem 1rem; font-size: 0.88rem; }
 .stock-ok      { color: #059669; font-weight: 700; }
 .stock-bajo    { color: #d97706; font-weight: 700; }
 .stock-agotado { color: #dc2626; font-weight: 700; }
+
+/* ── LOGIN ───────────────────────────────────────── */
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a56db 0%, #1e3a8a 100%);
+}
+
+.login-card {
+  background: white;
+  border-radius: 14px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.login-logo  { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.login-titulo { font-size: 1.3rem; font-weight: 700; color: #1a56db; margin-bottom: 4px; }
+.login-sub    { font-size: 0.85rem; color: #6b7280; margin-bottom: 1.5rem; }
+
+.login-form { text-align: left; display: flex; flex-direction: column; gap: 0.85rem; }
+.login-form label {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 0.82rem; font-weight: 600; color: #374151;
+}
+.login-form input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+.login-form input:focus { outline: none; border-color: #1a56db; box-shadow: 0 0 0 3px rgba(26,86,219,0.1); }
+.login-btn { width: 100%; padding: 0.6rem; font-size: 0.95rem; margin-top: 4px; }
+
+/* ── HEADER USUARIO ──────────────────────────────── */
+.header-usuario {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.usuario-nombre { font-size: 0.85rem; font-weight: 600; }
+
+.rol-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+.rol-badge.admin    { background: #fef3c7; color: #92400e; }
+.rol-badge.operador { background: #dbeafe; color: #1e40af; }
+
+.btn-logout {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.15s;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+/* ── EXPORT BUTTON ───────────────────────────────── */
+.btn-export {
+  background: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.btn-export:hover { background: #f9fafb; border-color: #1a56db; color: #1a56db; }
+
+/* ── KPI CARDS ───────────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.2rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.kpi-icon  { font-size: 1.6rem; width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.kpi-value { font-size: 1.7rem; font-weight: 700; line-height: 1; }
+.kpi-label { font-size: 0.78rem; color: #6b7280; margin-top: 2px; }
+
+/* ── CHARTS ──────────────────────────────────────── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+  gap: 1rem;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.2rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.chart-titulo { font-size: 0.95rem; font-weight: 600; color: #374151; margin-bottom: 0.8rem; }

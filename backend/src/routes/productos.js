@@ -1,7 +1,11 @@
 const { Router } = require('express');
 const db = require('../db');
+const { autenticar, soloAdmin } = require('../middleware/auth');
 
 const router = Router();
+
+// Todas las rutas requieren estar autenticado
+router.use(autenticar);
 
 // Helpers
 const getStockActual = (productoId) => {
@@ -31,8 +35,8 @@ router.get('/:id', (req, res) => {
   res.json({ ...producto, stock_actual: getStockActual(producto.id) });
 });
 
-// POST /api/productos
-router.post('/', (req, res) => {
+// POST /api/productos  (solo admin)
+router.post('/', soloAdmin, (req, res) => {
   const { codigo, nombre, categoria, unidad, stock_min = 0, stock_inicial = 0 } = req.body;
 
   if (!codigo?.trim() || !nombre?.trim()) {
@@ -65,8 +69,8 @@ router.post('/', (req, res) => {
   res.status(201).json({ ...nuevo, stock_actual: getStockActual(lastInsertRowid) });
 });
 
-// PUT /api/productos/:id
-router.put('/:id', (req, res) => {
+// PUT /api/productos/:id  (solo admin)
+router.put('/:id', soloAdmin, (req, res) => {
   const { nombre, categoria, unidad, stock_min } = req.body;
 
   const producto = db.prepare('SELECT * FROM productos WHERE id = ?').get(req.params.id);
@@ -91,8 +95,8 @@ router.put('/:id', (req, res) => {
   res.json({ ...actualizado, stock_actual: getStockActual(actualizado.id) });
 });
 
-// DELETE /api/productos/:id
-router.delete('/:id', (req, res) => {
+// DELETE /api/productos/:id  (solo admin)
+router.delete('/:id', soloAdmin, (req, res) => {
   const producto = db.prepare('SELECT * FROM productos WHERE id = ?').get(req.params.id);
   if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
 
