@@ -5,6 +5,7 @@ import { Modal, ConfirmModal } from '../components/Modal';
 import { useAsync } from '../hooks/useAsync';
 import { useAuth } from '../context/AuthContext';
 import { exportarExcel, exportarPDF } from '../utils/exportar';
+import { BarcodeScanner } from '../components/BarcodeScanner';
 
 const COLUMNAS_EXPORT = [
   { key: 'fecha',            label: 'Fecha' },
@@ -28,9 +29,10 @@ export default function Movimientos() {
   const [filtroTipo,    setFiltroTipo]    = useState('');
   const [filtroProducto, setFiltroProducto] = useState('');
 
-  const [formOpen, setFormOpen] = useState(false);
-  const [form, setForm]         = useState(EMPTY_FORM);
-  const [deleteId, setDeleteId] = useState(null);
+  const [formOpen, setFormOpen]     = useState(false);
+  const [form, setForm]             = useState(EMPTY_FORM);
+  const [deleteId, setDeleteId]     = useState(null);
+  const [scannerOpen, setScannerOpen] = useState(false);
 
   const cargarMovimientos = useCallback(() =>
     movimientosApi.getAll({ tipo: filtroTipo, producto_id: filtroProducto })
@@ -82,8 +84,24 @@ export default function Movimientos() {
   if (loading)    return <div className="empty-msg">Cargando...</div>;
   if (fetchError) return <div className="error-msg" style={{ padding: 20 }}>{fetchError}</div>;
 
+  function handleScan(codigo) {
+    // Buscar el producto por código
+    const prod = productos.find(p => p.codigo === codigo.trim().toUpperCase());
+    if (prod) {
+      setForm(f => ({ ...f, producto_id: String(prod.id) }));
+      setScannerOpen(false);
+    } else {
+      alert(`Código "${codigo}" no encontrado en los productos registrados.`);
+    }
+  }
+
   return (
     <section>
+      <BarcodeScanner
+        open={scannerOpen}
+        onScan={handleScan}
+        onClose={() => setScannerOpen(false)}
+      />
       <div className="section-header">
         <h2>Movimientos</h2>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -108,12 +126,26 @@ export default function Movimientos() {
         <form onSubmit={guardar}>
           <div className="form-grid">
             <label>Producto *
-              <select value={form.producto_id} onChange={e => setForm(f => ({ ...f, producto_id: e.target.value }))}>
-                <option value="">-- Seleccionar --</option>
-                {productos.map(p => (
-                  <option key={p.id} value={p.id}>{p.codigo} – {p.nombre}</option>
-                ))}
-              </select>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <select
+                  style={{ flex: 1 }}
+                  value={form.producto_id}
+                  onChange={e => setForm(f => ({ ...f, producto_id: e.target.value }))}
+                >
+                  <option value="">-- Seleccionar --</option>
+                  {productos.map(p => (
+                    <option key={p.id} value={p.id}>{p.codigo} – {p.nombre}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  title="Escanear código de barras"
+                  className="btn-scan"
+                  onClick={() => setScannerOpen(true)}
+                >
+                  📷
+                </button>
+              </div>
             </label>
             <label>Tipo *
               <select value={form.tipo} onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))}>

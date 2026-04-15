@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { productosApi } from '../api/client';
 import { ConfirmModal, Modal } from '../components/Modal';
 import { useAsync } from '../hooks/useAsync';
+import { BarcodeScanner } from '../components/BarcodeScanner';
 
 const EMPTY_FORM = {
   codigo: '', nombre: '', categoria: '', unidad: '', stock_min: '', stock_inicial: '',
@@ -12,11 +13,11 @@ export default function Productos() {
   const [loading, setLoading]     = useState(true);
   const [fetchError, setFetchError] = useState(null);
 
-  const [formOpen, setFormOpen]   = useState(false);
-  const [editId, setEditId]       = useState(null);
-  const [form, setForm]           = useState(EMPTY_FORM);
-
-  const [deleteId, setDeleteId]   = useState(null);
+  const [formOpen, setFormOpen]     = useState(false);
+  const [editId, setEditId]         = useState(null);
+  const [form, setForm]             = useState(EMPTY_FORM);
+  const [deleteId, setDeleteId]     = useState(null);
+  const [scannerOpen, setScannerOpen] = useState(false);
 
   const cargar = useCallback(() =>
     productosApi.getAll()
@@ -83,6 +84,15 @@ export default function Productos() {
 
   return (
     <section>
+      <BarcodeScanner
+        open={scannerOpen}
+        onScan={codigo => {
+          setForm(f => ({ ...f, codigo: codigo.trim().toUpperCase() }));
+          setScannerOpen(false);
+        }}
+        onClose={() => setScannerOpen(false)}
+      />
+
       <div className="section-header">
         <h2>Productos</h2>
         <button className="btn-primary" onClick={abrirNuevo}>+ Nuevo Producto</button>
@@ -93,12 +103,20 @@ export default function Productos() {
         <form onSubmit={guardar}>
           <div className="form-grid">
             <label>Código *
-              <input
-                value={form.codigo}
-                onChange={e => setForm(f => ({ ...f, codigo: e.target.value }))}
-                disabled={!!editId}
-                placeholder="Ej: P001"
-              />
+              <div style={{ display: 'flex', gap: 6 }}>
+                <input
+                  style={{ flex: 1 }}
+                  value={form.codigo}
+                  onChange={e => setForm(f => ({ ...f, codigo: e.target.value }))}
+                  disabled={!!editId}
+                  placeholder="Ej: P001"
+                />
+                {!editId && (
+                  <button type="button" className="btn-scan" title="Escanear código" onClick={() => setScannerOpen(true)}>
+                    📷
+                  </button>
+                )}
+              </div>
             </label>
             <label>Nombre *
               <input
