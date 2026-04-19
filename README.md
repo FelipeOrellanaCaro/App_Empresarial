@@ -52,9 +52,32 @@ npm run dev
 
 Abrir en el navegador: [http://localhost:5173](http://localhost:5173)
 
+## Acceso por defecto
+
+Al iniciar el backend por primera vez se crea automáticamente un usuario administrador:
+
+| Campo      | Valor                    |
+|------------|--------------------------|
+| Email      | admin@inventario.com     |
+| Contraseña | admin123                 |
+| Rol        | admin                    |
+
+> ⚠️ Se recomienda cambiar la contraseña después del primer uso.
+
+## Roles
+
+| Rol       | Permisos |
+|-----------|----------|
+| `admin`   | Acceso total: productos, movimientos, usuarios |
+| `operador`| Solo puede registrar movimientos y ver stock |
+
 ## Funcionalidades
 
+- Login con roles (admin / operador)
+- Dashboard con KPIs y gráficos de stock y movimientos
 - Registrar productos con código, categoría, unidad y stock mínimo
 - Registrar entradas y salidas de stock con fecha y motivo
+- Escanear código de barras con la cámara
 - Visualizar stock actual con alertas de stock bajo o agotado
+- Exportar stock y movimientos a Excel o PDF
 - Anular movimientos con validación de consistencia
