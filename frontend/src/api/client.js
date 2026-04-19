@@ -19,6 +19,13 @@ async function request(path, options = {}) {
   const data = await res.json();
 
   if (!res.ok) {
+    // Token expirado o inválido → cerrar sesión y redirigir al login
+    if (res.status === 401) {
+      localStorage.removeItem('inv_token');
+      localStorage.removeItem('inv_usuario');
+      window.location.href = '/login';
+      return;
+    }
     const err = new Error(data.error || 'Error desconocido');
     err.status = res.status;
     err.data = data;
